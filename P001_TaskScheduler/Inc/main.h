@@ -1,0 +1,32 @@
+/*
+ * main.h
+ *
+ *  Created on: Nov 11, 2025
+ *      Author: balaji-s
+ */
+
+#ifndef MAIN_H_
+#define MAIN_H_
+
+#define TASK_STACK_SIZE 1024U
+#define SCHEDULE_STACK_SIZE 1024U
+
+#define SRAM_START 0x20000000U
+#define SRAM_SIZE ((128U)*(1024U))
+#define SRAM_END ((SRAM_START) + (SRAM_SIZE))
+
+#define TASK1_STACK_START SRAM_END
+#define TASK2_STACK_START ((SRAM_END) - (1U * TASK_STACK_SIZE))
+#define TASK3_STACK_START ((SRAM_END) - (2U * TASK_STACK_SIZE))
+#define TASK4_STACK_START ((SRAM_END) - (3U * TASK_STACK_SIZE))
+#define SCHEDULER_STACK_START ((SRAM_END) - (4U * TASK_STACK_SIZE))
+
+#define TICK_HZ 1000U
+#define HSI_CLOCK 16000000U
+#define SYSTICK_TIMER_CLOCK HSI_CLOCK
+
+#define MAX_TASK 4U
+#define INITIAL_XPSR 0x01000000U
+#define EXC_RETURN 0xFFFFFFFDU
+
+#endif /* MAIN_H_ */

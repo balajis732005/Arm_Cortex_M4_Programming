@@ -1,0 +1,9 @@
+using sysbus
+$name?="stm32f4_discovery"
+mach create $name
+machine LoadPlatformDescription "/home/balaji-s/renode_portable/platforms/boards/stm32f4_discovery.repl"
+sysbus LoadELF "/home/balaji-s/Arm-Cortex-Mx-Programming/002HelloWorld_SemiHosting/Debug/002HelloWorld_SemiHosting.elf"
+sysbus.cpu SemihostingEnabled true
+machine StartGdbServer 3333
+emulation CreateServerSocketTerminal 4444 "semihosting"
+start

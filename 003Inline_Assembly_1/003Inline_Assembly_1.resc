@@ -1,0 +1,7 @@
+using sysbus
+$name?="stm32f4_discovery"
+mach create $name
+machine LoadPlatformDescription "/home/balaji-s/renode_portable/platforms/boards/stm32f4_discovery.repl"
+sysbus LoadELF "/home/balaji-s/Arm-Cortex-Mx-Programming/003Inline_Assembly_1/Debug/003Inline_Assembly_1.elf"
+machine StartGdbServer 3333
+start
