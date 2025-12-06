@@ -20,12 +20,11 @@
   #warning "FPU is not initialized, but the project is compiling for an FPU. Please initialize the FPU before use."
 #endif
 
-#include<stdio.h>
-#include<stdint.h>
+#include <stdio.h>
+#include <stdint.h>
 #include "main.h"
 #include "led.h"
 
-/* task handler function prototypes */
 void task1_handler(void); //This is task1
 void task2_handler(void); //this is task2
 void task3_handler(void); //this is task3
@@ -42,13 +41,14 @@ uint32_t get_psp_value(void);
 void task_delay(uint32_t tick_count);
 
 
-/* This variable tracks the current_task being executed on the CPU */
 uint8_t current_task = 1; //task1 is running
 
-/* This variable gets updated from systick handler for every systick interrupt */
+
 uint32_t g_tick_count = 0;
 
-/* This is a task control block carries private information of each task */
+const uint32_t const_v_1 = 100;
+const uint32_t const_v_2 = 100;
+const uint8_t const_V_3 = 100;
 typedef struct
 {
 	uint32_t psp_value;
@@ -57,15 +57,21 @@ typedef struct
 	void (*task_handler)(void);
 }TCB_t;
 
-/* Each task has its own TCB */
 TCB_t user_tasks[MAX_TASKS];
+
+//semihosting init function 
+extern void initialise_monitor_handles(void);
 
 int main(void)
 {
 
 	enable_processor_faults();
+	
+	initialise_monitor_handles();
 
 	init_scheduler_stack(SCHED_STACK_START);
+
+	printf("Implementation of simple task scheduler\n");
 
 	init_tasks_stack();
 
@@ -91,10 +97,11 @@ void task1_handler(void)
 {
 	while(1)
 	{
+		printf("Task1 is executing\n");
 		led_on(LED_GREEN);
-		delay(DELAY_COUNT_1S);
+		task_delay(1000);
 		led_off(LED_GREEN);
-		delay(DELAY_COUNT_1S);
+		task_delay(1000);
 	}
 
 }
@@ -103,10 +110,11 @@ void task2_handler(void)
 {
 	while(1)
 	{
+		printf("Task2 is executing\n");
 		led_on(LED_ORANGE);
-		delay(DELAY_COUNT_500MS);
+		task_delay(1000);
 		led_off(LED_ORANGE);
-		delay(DELAY_COUNT_500MS);
+		task_delay(1000);
 	}
 
 }
@@ -115,10 +123,11 @@ void task3_handler(void)
 {
 	while(1)
 	{
+		printf("Task3 is executing\n");
 		led_on(LED_BLUE);
-		delay(DELAY_COUNT_250MS);
+		task_delay(250);
 		led_off(LED_BLUE);
-		delay(DELAY_COUNT_250MS);
+		task_delay(250);
 	}
 
 }
@@ -128,10 +137,11 @@ void task4_handler(void)
 {
 	while(1)
 	{
+		printf("Task4 is executing\n");
 		led_on(LED_RED);
-		delay(DELAY_COUNT_125MS);
+		task_delay(125);
 		led_off(LED_RED);
-		delay(DELAY_COUNT_125MS);
+		task_delay(125);
 	}
 
 
@@ -143,7 +153,6 @@ void init_systick_timer(uint32_t tick_hz)
 	uint32_t *pSRVR = (uint32_t*)0xE000E014;
 	uint32_t *pSCSR = (uint32_t*)0xE000E010;
 
-    /* calculation of reload value */
     uint32_t count_value = (SYSTICK_TIM_CLK/tick_hz)-1;
 
     //Clear the value of SVR
@@ -171,7 +180,7 @@ __attribute__((naked)) void init_scheduler_stack(uint32_t sched_top_of_stack)
 
 
 
-/* this function stores dummy stack contents for each task */
+
 
 void init_tasks_stack(void)
 {
@@ -202,10 +211,11 @@ void init_tasks_stack(void)
 		pPSP = (uint32_t*) user_tasks[i].psp_value;
 
 		pPSP--;
-		*pPSP = DUMMY_XPSR;//0x01000000
+		*pPSP = DUMMY_XPSR;//0x00100000
 
 		pPSP--; //PC
 		*pPSP = (uint32_t) user_tasks[i].task_handler;
+
 
 		pPSP--; //LR
 		*pPSP = 0xFFFFFFFD;

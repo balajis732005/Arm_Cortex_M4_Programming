@@ -1,8 +1,5 @@
-
 #include<stdint.h>
 #include "led.h"
-
-
 
 void delay(uint32_t count)
 {
@@ -53,5 +50,3 @@ void led_off(uint8_t led_no)
 	  *pGpiodDataReg &= ~( 1 << led_no);
 
 }
-
-

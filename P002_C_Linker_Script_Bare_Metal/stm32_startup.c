@@ -1,5 +1,4 @@
-#include <stdint.h>
-#include <stdint.h>
+#include<stdint.h>
 
 #define SRAM_START  0x20000000U
 #define SRAM_SIZE   (128U * 1024U) //128KB
@@ -20,7 +19,6 @@ extern uint32_t _ebss;
 int main(void);
 
 void __libc_init_array(void);
-
 
 /* function prototypes of STM32F446RETx system exception and IRQ handlers */
 
